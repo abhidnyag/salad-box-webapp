@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProductType {
+  SALAD
+  SANDWICH
+}
+
+model Category {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique @db.VarChar(100)
+  slug      String      @unique @db.VarChar(100)
+  type      ProductType @default(SALAD)
+  color     String      @default("#E8F5E9") @db.VarChar(20)
+  icon      String      @default("🥗") @db.VarChar(10)
+  products  Product[]
+  createdAt DateTime    @default(now())
+}
+
+model Product {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(200)
+  slug        String        @unique @db.VarChar(200)
+  description String        @db.Text
+  price       Decimal       @db.Decimal(10, 2)
+  oldPrice    Decimal?      @db.Decimal(10, 2)
+  type        ProductType   @default(SALAD)
+  imageColor  String        @default("#E8F5E9") @db.VarChar(20)
+  prepTime    Int           @default(10)
+  calories    Int           @default(300)
+  servings    Int           @default(2)
+  rating      Decimal       @default(4.5) @db.Decimal(2, 1)
+  reviewCount Int           @default(0)
+  badges      String?       @db.VarChar(200)
+  featured    Boolean       @default(false)
+  categoryId  Int
+  category    Category      @relation(fields: [categoryId], references: [id])
+  ingredients Ingredient[]
+  recipe      Recipe?
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  createdAt   DateTime      @default(now())
+
+  @@index([categoryId])
+  @@index([type])
+  @@index([slug])
+}
+
+model Ingredient {
+  id        Int     @id @default(autoincrement())
+  name      String  @db.VarChar(200)
+  quantity  String  @db.VarChar(50)
+  detail    String? @db.VarChar(200)
+  color     String  @default("#E8F5E9") @db.VarChar(20)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Recipe {
+  id          Int          @id @default(autoincrement())
+  productId   Int          @unique
+  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title       String       @default("") @db.VarChar(200)
+  description String?      @db.Text
+  difficulty  String       @default("Easy") @db.VarChar(50)
+  chefTip     String?      @db.Text
+  steps       RecipeStep[]
+}
+
+model RecipeStep {
+  id          Int    @id @default(autoincrement())
+  stepNumber  Int
+  title       String @db.VarChar(200)
+  description String @db.Text
+  duration    String @db.VarChar(50)
+  recipeId    Int
+  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(200)
+  email     String     @unique @db.VarChar(200)
+  password  String?    @db.VarChar(255)
+  avatar    String?    @db.VarChar(500)
+  joinDate  DateTime   @default(now())
+  orders    Order[]
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int     @default(1)
+  userId    Int
+  productId Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  orderNumber String      @unique @db.VarChar(20)
+  status      String      @default("confirmed") @db.VarChar(50)
+  subtotal    Decimal     @db.Decimal(10, 2)
+  deliveryFee Decimal     @default(2.99) @db.Decimal(10, 2)
+  tax         Decimal     @db.Decimal(10, 2)
+  tip         Decimal     @default(0) @db.Decimal(10, 2)
+  total       Decimal     @db.Decimal(10, 2)
+  address     String      @db.Text
+  deliverySlot String     @db.VarChar(100)
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+  createdAt   DateTime    @default(now())
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int     @default(1)
+  price     Decimal @db.Decimal(10, 2)
+  orderId   Int
+  productId Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+}

@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-surface text-txt;
+  }
+  ::selection {
+    @apply bg-brand-green/20;
+  }
+}
+
+@layer components {
+  .link-green {
+    @apply text-brand-green hover:underline transition-colors;
+  }
+  .card {
+    @apply bg-white border border-surface-border rounded-card;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
