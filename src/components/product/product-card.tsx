@@ -9,8 +9,12 @@ import { useCart } from '@/context/cart-context';
 import type { Product } from '@/types';
 
 export function ProductCard({ product }: { product: Product }) {
-  const { addItem } = useCart();
+  const { addItem, updateItem, removeItem, items } = useCart();
   const theme = getTypeTheme(product.type);
+  const quantityInCart = items.find((i: any) => i.product.id === product.id)?.quantity ?? 0;
+
+  const decrement = () =>
+    quantityInCart <= 1 ? removeItem(product.id) : updateItem(product.id, quantityInCart - 1);
 
   return (
     <div className="bg-surface-card rounded-card border border-surface-border hover:shadow-lg transition-shadow group">
@@ -44,12 +48,33 @@ export function ProductCard({ product }: { product: Product }) {
               <span className="text-sm text-txt-muted line-through">{formatPrice(product.oldPrice)}</span>
             )}
           </div>
-          <button
-            onClick={() => addItem(product.id)}
-            className={`${theme.primary} text-white w-9 h-9 rounded-btn flex items-center justify-center text-xl hover:opacity-90 transition-opacity`}
-          >
-            +
-          </button>
+          {quantityInCart > 0 ? (
+            <div className={`${theme.primary} inline-flex items-center text-white rounded-btn`}>
+              <button
+                onClick={decrement}
+                aria-label={`Remove one ${product.name}`}
+                className="w-9 h-9 flex items-center justify-center text-xl rounded-l-btn hover:opacity-90 transition-opacity"
+              >
+                −
+              </button>
+              <span className="w-7 text-center font-bold text-sm" aria-live="polite">{quantityInCart}</span>
+              <button
+                onClick={() => addItem(product.id)}
+                aria-label={`Add one ${product.name}`}
+                className="w-9 h-9 flex items-center justify-center text-xl rounded-r-btn hover:opacity-90 transition-opacity"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => addItem(product.id)}
+              aria-label={`Add ${product.name} to cart`}
+              className={`${theme.primary} text-white w-9 h-9 rounded-btn flex items-center justify-center text-xl hover:opacity-90 transition-opacity`}
+            >
+              +
+            </button>
+          )}
         </div>
       </div>
     </div>

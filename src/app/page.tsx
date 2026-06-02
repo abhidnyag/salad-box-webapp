@@ -91,7 +91,7 @@ export default async function HomePage() {
                 Gourmet sandwich ingredient kits with chef-crafted recipes. Premium breads, fresh fillings, and signature sauces.
               </p>
               <Link href="/explore?type=SANDWICH" className="inline-block mt-4">
-                <Button className="bg-white text-brand-orange hover:bg-white/90">Explore Sandwiches</Button>
+                <Button variant="ghost" className="bg-white !text-brand-orange hover:bg-white/90">Explore Sandwiches</Button>
               </Link>
             </div>
             <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center text-6xl">
