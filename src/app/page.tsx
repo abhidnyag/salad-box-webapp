@@ -41,7 +41,7 @@ export default async function HomePage() {
             </p>
             <div className="flex gap-3 mt-8">
               <Link href="/explore?type=SALAD">
-                <Button size="lg" className="bg-white text-brand-green hover:bg-white/90">Shop Salads</Button>
+                <Button variant="ghost" size="lg" className="bg-white text-brand-green hover:bg-white/90">Shop Salads</Button>
               </Link>
               <Link href="/explore?type=SANDWICH">
                 <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">Shop Sandwiches</Button>
