@@ -26,21 +26,5 @@ export function createApolloClient() {
   });
 }
 
-// Server-side client for use in Server Components
-let serverClient: ApolloClient<any> | null = null;
-
-export function getClient() {
-  if (!serverClient) {
-    serverClient = new ApolloClient({
-      link: new HttpLink({
-        uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:3000/api/graphql',
-        fetchOptions: { cache: 'no-store' },
-      }),
-      cache: new InMemoryCache(),
-      defaultOptions: {
-        query: { fetchPolicy: 'no-cache' },
-      },
-    });
-  }
-  return serverClient;
-}
+// NOTE: Server Components must NOT fetch over HTTP from our own API. They run
+// GraphQL in-process via `executeServerQuery` in `src/lib/graphql/server.ts`.

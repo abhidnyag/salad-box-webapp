@@ -1,22 +1,23 @@
-import { getClient } from '@/lib/apollo-client';
+import { executeServerQuery } from '@/lib/graphql/server';
 import { GET_PRODUCTS, GET_CATEGORIES } from '@/lib/graphql/queries';
 import { PageContainer } from '@/components/layout/page-container';
 import { Section } from '@/components/layout/section';
 import { ProductGrid } from '@/components/product/product-grid';
-import { ProductCard } from '@/components/product/product-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import type { Product, Category } from '@/types';
 
+// Rendered per request, but cheaply: the three queries below run in-process
+// (resolvers -> Prisma) with no HTTP round-trip. Kept dynamic so `next build`
+// never needs a live database to prerender this page.
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const client = getClient();
-  const [{ data: saladsData }, { data: sandwichesData }, { data: catData }] = await Promise.all([
-    client.query({ query: GET_PRODUCTS, variables: { type: 'SALAD', featured: true } }),
-    client.query({ query: GET_PRODUCTS, variables: { type: 'SANDWICH', featured: true } }),
-    client.query({ query: GET_CATEGORIES }),
+  const [saladsData, sandwichesData, catData] = await Promise.all([
+    executeServerQuery<{ products: Product[] }>(GET_PRODUCTS, { type: 'SALAD', featured: true }),
+    executeServerQuery<{ products: Product[] }>(GET_PRODUCTS, { type: 'SANDWICH', featured: true }),
+    executeServerQuery<{ categories: Category[] }>(GET_CATEGORIES),
   ]);
 
   const salads: Product[] = saladsData.products;

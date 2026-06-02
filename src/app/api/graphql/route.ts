@@ -1,13 +1,10 @@
-import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { NextRequest } from 'next/server';
-import { typeDefs } from '@/lib/graphql/schema';
-import { resolvers, type GraphQLContext } from '@/lib/graphql/resolvers';
+import { apolloServer } from '@/lib/graphql/server';
+import { type GraphQLContext } from '@/lib/graphql/resolvers';
 import { verifyToken } from '@/lib/auth';
 
-const server = new ApolloServer<GraphQLContext>({ typeDefs, resolvers });
-
-const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(server, {
+const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(apolloServer, {
   // Verify the bearer token on every request and expose the authenticated
   // user id to resolvers. Resolvers must never trust a client-supplied userId.
   context: async (req) => {

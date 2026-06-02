@@ -27,7 +27,7 @@ There is **no test framework configured** — no `test` script exists. Verify ch
 ## Architecture essentials
 
 - **Single GraphQL API.** All data flows through `POST /api/graphql` (`src/app/api/graphql/route.ts`, Apollo Server bridged to Next via `@as-integrations/next`). Schema, resolvers, and client queries live in `src/lib/graphql/`. There are no REST routes.
-- **Server vs. client data fetching.** Server Components (home, product detail, recipe) fetch with server-side Apollo via `getClient()` (`src/lib/apollo-client.ts`). Interactive pages (explore, cart, checkout, confirmation, profile) are Client Components using `useQuery`/`useMutation` or the cart context.
+- **Server vs. client data fetching.** Server Components (home, product detail, recipe) run GraphQL **in-process** via `executeServerQuery` (`src/lib/graphql/server.ts`) — resolvers → Prisma, no HTTP round-trip to our own API. (It JSON-normalizes the result because graphql-js returns null-prototype objects that can't cross into Client Components.) Do **not** fetch from `/api/graphql` over HTTP in a Server Component. Interactive pages (explore, cart, checkout, confirmation, profile) are Client Components using `useQuery`/`useMutation` or the cart context against the same `/api/graphql` endpoint.
 - **Cart is database-backed**, not client state. `CartProvider` (`src/context/cart-context.tsx`) exposes `useCart()`; every action fires a GraphQL mutation then refetches `GET_CART` to resync. `CartItem` is unique on `userId + productId`.
 - **Type-aware theming.** Products are `SALAD | SANDWICH` (Prisma enum). `getTypeTheme()` in `src/lib/utils.ts` returns green vs. orange Tailwind classes that propagate through cards, detail pages, and badges.
 

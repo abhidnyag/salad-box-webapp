@@ -1,4 +1,4 @@
-import { getClient } from '@/lib/apollo-client';
+import { executeServerQuery } from '@/lib/graphql/server';
 import { GET_PRODUCT } from '@/lib/graphql/queries';
 import { PageContainer } from '@/components/layout/page-container';
 import { IngredientList } from '@/components/product/ingredient-list';
@@ -12,7 +12,7 @@ import { notFound } from 'next/navigation';
 import type { Product } from '@/types';
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const { data } = await getClient().query({ query: GET_PRODUCT, variables: { slug: params.slug } });
+  const data = await executeServerQuery<{ product: Product | null }>(GET_PRODUCT, { slug: params.slug });
   const product: Product | null = data?.product;
 
   if (!product) notFound();

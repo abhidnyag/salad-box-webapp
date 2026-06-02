@@ -2,16 +2,23 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@apollo/client';
+import dynamic from 'next/dynamic';
 import { GET_PRODUCTS, GET_CATEGORIES } from '@/lib/graphql/queries';
 import { PageContainer } from '@/components/layout/page-container';
-import { ProductGrid } from '@/components/product/product-grid';
-import { ProductCard } from '@/components/product/product-card';
 import { CategoryPills } from '@/components/ui/category-pills';
 import { Loading } from '@/components/ui/loading';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
 import { useState, useMemo, Suspense } from 'react';
 import type { Product, Category } from '@/types';
+
+// This page is fully client-rendered (URL filters via useSearchParams), so the
+// product grid has no SSR value. Code-split it into its own chunk that loads
+// only once products are ready, keeping the initial route JS smaller.
+const ProductGrid = dynamic(
+  () => import('@/components/product/product-grid').then((m) => m.ProductGrid),
+  { ssr: false, loading: () => <Loading /> },
+);
 
 function ExploreContent() {
   const searchParams = useSearchParams();
