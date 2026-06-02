@@ -1,5 +1,27 @@
+# dependencies
 node_modules/
+
+# next.js build output
 .next/
+out/
+
+# env / secrets — never commit real values (.env.example is the safe template)
 .env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# typescript / build artifacts
 *.tsbuildinfo
 next-env.d.ts
+
+# logs
+*.log
+npm-debug.log*
+
+# os / editor cruft
+.DS_Store
+Thumbs.db
