@@ -9,7 +9,7 @@ const footerLinks = [
 export function Footer() {
   return (
     <footer className="bg-brand-green-dark text-white mt-16">
-      <div className="max-w-[1400px] mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="max-w-[1400px] 2xl:max-w-[1680px] 3xl:max-w-[1840px] mx-auto px-6 lg:px-8 xl:px-12 2xl:px-16 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div>
           <h3 className="text-lg font-bold mb-2">SaladBox</h3>
           <p className="text-brand-green-pale text-sm">Fresh salad &amp; sandwich kits delivered to your door.</p>

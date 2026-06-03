@@ -4,6 +4,11 @@ const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      // Extra tier above Tailwind's 2xl (1536px) so 27"+/4K displays get their
+      // own layout step instead of topping out at the desktop breakpoint.
+      screens: {
+        '3xl': '1920px',
+      },
       colors: {
         brand: {
           green: { DEFAULT: '#2E7D32', dark: '#1B5E20', light: '#E8F5E9', mid: '#4CAF50', pale: '#C8E6C9' },

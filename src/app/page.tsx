@@ -31,7 +31,7 @@ export default async function HomePage() {
         <PageContainer className="py-16 md:py-24">
           <div className="max-w-2xl">
             <Badge variant="yellow" className="mb-4">Free delivery on first order</Badge>
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
               Fresh Ingredients.<br />
               Easy Recipes.<br />
               <span className="text-brand-green-light">One Box.</span>
