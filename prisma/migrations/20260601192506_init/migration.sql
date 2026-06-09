@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `category` MODIFY `icon` VARCHAR(10) NOT NULL DEFAULT '🥗';
+ALTER TABLE `Category` MODIFY `icon` VARCHAR(10) NOT NULL DEFAULT '🥗';
