@@ -4,6 +4,10 @@ import { apolloServer } from '@/lib/graphql/server';
 import { type GraphQLContext } from '@/lib/graphql/resolvers';
 import { verifyToken } from '@/lib/auth';
 
+// This route talks to Prisma/Apollo at request time only — never prerender it.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(apolloServer, {
   // Verify the bearer token on every request and expose the authenticated
   // user id to resolvers. Resolvers must never trust a client-supplied userId.
