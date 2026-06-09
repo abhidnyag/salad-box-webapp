@@ -11,6 +11,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Product } from '@/types';
 
+// Kept dynamic so `next build` never needs a live database to prerender.
+export const dynamic = 'force-dynamic';
+
 export default async function RecipePage({ params }: { params: { slug: string } }) {
   const data = await executeServerQuery<{ product: Product | null }>(GET_PRODUCT, { slug: params.slug });
   const product: Product | null = data?.product;
