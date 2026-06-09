@@ -17,12 +17,20 @@ npm run lint         # ESLint (next lint)
 
 npm run db:generate  # Regenerate Prisma client (run after editing schema.prisma)
 npm run db:migrate   # prisma migrate dev
+npm run db:push      # prisma db push (sync schema without a migration — prototyping only)
 npm run db:seed      # Seed sample data (tsx prisma/seed.ts)
 npm run db:setup     # migrate + seed in one step
 npm run db:studio    # Prisma Studio DB browser
 ```
 
 There is **no test framework configured** — no `test` script exists. Verify changes via `npm run lint`, `npm run build`, and running the app.
+
+## Environment
+
+Copy `.env.example` to `.env`. Required vars:
+- `DATABASE_URL` — MySQL connection string for Prisma.
+- `NEXT_PUBLIC_GRAPHQL_URL` — client-side GraphQL endpoint (defaults to `http://localhost:3000/api/graphql`).
+- `AUTH_SECRET` — signs session tokens (HMAC-SHA256). Use a long random value in production.
 
 ## Architecture essentials
 
@@ -40,3 +48,6 @@ There is **no test framework configured** — no `test` script exists. Verify ch
 - **Prisma client is a singleton** (`src/lib/prisma.ts`) to survive hot reloads — reuse the exported `prisma`, don't `new PrismaClient()`.
 - **Dev uses an in-memory webpack cache** (`next.config.js`) to work around Windows file-lock corruption of `.next/cache`. Keep this for dev builds on Windows.
 - After changing `prisma/schema.prisma`, run `npm run db:generate` (and a migration) before relying on new types.
+- **Code style.** No ESLint/Prettier config is checked in — `npm run lint` uses Next's defaults, so formatting is convention-only: 2-space indent, single quotes, **kebab-case** filenames.
+- **Components use named exports**, never default exports (`export function Badge(...)`). Merge Tailwind classes with the `cn()` helper from `src/lib/utils.ts`. For components with style variants, follow the existing `Record<Variant, string>` lookup-map pattern (see `src/components/ui/button.tsx`).
+- **Server Components are the default.** Add `'use client'` only to genuinely interactive components (forms, cart UI, anything using hooks/state). A Server Component must not import client-only hooks — keep the server/client boundary deliberate.
